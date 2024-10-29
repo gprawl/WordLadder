@@ -2,63 +2,97 @@ import java.util.*;
 
 public class WordLadderClient {
     public static void main(String[] args) {
-        if (args.length == 0){
-            System.out.println("What file do you want to read?");
-            System.exit(0);
-        }
 
-        String filename = args [0];
         WordLinker wordLinker = new WordLinker();
-        Scanner scanner = new Scanner(System.in);
+        Scanner userInput = new Scanner(System.in);
+        int userSelection = 0; //basic parameter of the while loop - for now
 
-        //basic parameter of the while loop - for now
-        int userSelection = 0;
+        while (userSelection != 4) { //work on all errors from wrong input
 
-        while (true && userSelection != 4) {
+            userSelection = getUserSelection(userInput);
 
-
-            System.out.println("You have 3 choices for using Word Ladders!\n1.) See neightbors of a word\n2.) Contstruct a random walk through the graph using a given start word\n3.) Find a path between two words\n4.) Exit\n Enter a number for your selection..");
-            userSelection = scanner.nextInt();
-            scanner.nextLine();
-
-            if (userSelection < 1 || userSelection > 4) {
-                System.out.println("Try again. Please enter 1, 2, 3, or 4 to continue.");
-                continue;
+            String userStartWord = "";
+            if (userSelection != 4) {
+                userStartWord = mainSetStartWord(wordLinker, userInput);
             }
 
-            System.out.printf("Please input a start word to find its neighbors...\nThere are %d total words to choose from: \n", wordLinker.getNumWords());
-            String userStartWord = scanner.nextLine();
-            wordLinker.setStartWord(userStartWord);
+                switch (userSelection){
 
+              // 1st see the neighbors of a word. If you input any word that is a word in wordlist
+              // it will output a word that is only different by one letter
+                    case 1:
+                        showNeighbors(wordLinker, userStartWord);
+                        break;
 
-            // 1st see the neighbors of a word. If you input any word that is a word in wordlist
-            // it will output a word that is only different by one letter
-            if (userSelection == 1 && wordLinker.isWord(userStartWord)) {
-                System.out.printf("There are %d neighbors of '%s' are %s: ", wordLinker.getNumCandidates(),  userStartWord, wordLinker.getNeighbors(userStartWord));
-                System.out.println();
+               //You give a target length for a path positive integer you may not reach the target
+               //length is the words don't have enough neighbors then input a start words that must
+              // be from the collection the output would be a random walk, but not the shortest
+                    case 2:
+                        //function_that_makes_randompath(wordLinker, userStartWord, scanner);
+                        break;
+
+                    case 3:
+
+                        break;
+
+                    case 4:
+                        System.out.println("The Word Ladder program has ended.");
+                        return;
+
+                }
+
             }
-
-
-            //You give a target length for a path positive integer you may not reach the target
-            //length is the words don't have enough neighbors then input a start words that must be from the collection the output would be a random walk, but not the shortest
-            if (userSelection == 2 && wordLinker.isWord(userStartWord)) {
-                System.out.print("Enter the target length for the path (positive integer): ");
-//                    int targetLength = scanner.nextInt();
-//                    scanner.nextLine();
-                System.out.println();
-            }
-
-
-            if (userSelection == 3 && wordLinker.isWord(userStartWord)) {
-                System.out.println();
-            }
-
-            if (userSelection == 4) {
-                System.out.println("Exiting the program.");
-            }
-
-        }
-
 
     }
+
+    public static int getUserSelection(Scanner userInput) {
+        int selection = 0;
+        while (true) {
+            System.out.println("\nChoose an option for Word Ladders:");
+            System.out.println("1.) See neighbors of a word");
+            System.out.println("2.) Construct a random walk through the graph");
+            System.out.println("3.) Find a path between two words");
+            System.out.println("4.) Exit");
+            System.out.print("Enter your choice: ");
+
+            try {
+                selection = userInput.nextInt();
+                userInput.nextLine();
+
+                if (selection >= 1 && selection <= 4) {
+                    return selection;
+                } else {
+                    System.out.println("Try agian. Please pick a number between 1 and 4.");
+                }
+            } catch (Exception e) {
+                System.out.println("Please enter a number between 1 and 4.");
+                userInput.nextLine();
+            }
+        }
+    }
+
+
+    public static String mainSetStartWord(WordLinker wordLinker, Scanner userInput) {
+        //Scanner userInput = new Scanner(System.in);
+        String inputWord = "";
+        while (true) {
+            int numWords = wordLinker.getNumWords();
+            System.out.printf("Please input a start word (Total words: %d): ", numWords);
+            inputWord = userInput.nextLine();
+
+            // doubele check for the loop
+            if (wordLinker.isWord(inputWord)) {
+                wordLinker.setStartWord(inputWord);
+                return inputWord;
+            } else {
+                System.out.println("The word is not in the word list. Try again.");
+            }
+        }
+    }
+
+    public static void showNeighbors(WordLinker wordLinker, String userStartWord) {
+        List<String> neighbors = wordLinker.getNeighbors(userStartWord);
+        System.out.printf("There are %d neighbors of '%s': %s\n", neighbors.size(), userStartWord, neighbors);
+    }
+
 }
