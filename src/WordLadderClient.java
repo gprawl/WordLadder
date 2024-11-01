@@ -5,15 +5,20 @@ public class WordLadderClient {
 
         WordLinker wordLinker = new WordLinker();
         Scanner userInput = new Scanner(System.in);
+
+        System.out.println("Welcome to the Word Ladder program!");
+        String userStartWord = mainSetStartWord(wordLinker);
         int userSelection = 0; //basic parameter of the while loop - for now
+
 
         while (userSelection != 4) { //work on all errors from wrong input
 
             userSelection = getUserSelection(userInput);
 
-            String userStartWord = "";
-            if (userSelection != 4) {
-                userStartWord = mainSetStartWord(wordLinker, userInput);
+//            String userStartWord = "";
+            if (userSelection == 4) {
+                System.out.println("The Word Ladder program has ended.");
+                break;
             }
 
                 switch (userSelection){
@@ -27,22 +32,22 @@ public class WordLadderClient {
                //You give a target length for a path positive integer you may not reach the target
                //length is the words don't have enough neighbors then input a start words that must
               // be from the collection the output would be a random walk, but not the shortest
+                    //make sure to handle target length exceptions
                     case 2:
-                        //function_that_makes_randompath(wordLinker, userStartWord, scanner);
+                        //randompath(wordLinker, userStartWord);
                         break;
 
+                //BFS both words have to be outputs of the collection and the output is the word ladder between those two words.
+                // if you use bfs it will be the shortest path. the top level control should be clear and user-friendly,
                     case 3:
-
+                        //BFS(wordLinker, userStartWord);
                         break;
 
-                    case 4:
-                        System.out.println("The Word Ladder program has ended.");
-                        return;
+                    default:
+                        System.out.println("Not valid. Please try again.");
 
                 }
-
             }
-
     }
 
     public static int getUserSelection(Scanner userInput) {
@@ -62,7 +67,7 @@ public class WordLadderClient {
                 if (selection >= 1 && selection <= 4) {
                     return selection;
                 } else {
-                    System.out.println("Try agian. Please pick a number between 1 and 4.");
+                    System.out.println("Try again. Please pick a number between 1 and 4.");
                 }
             } catch (Exception e) {
                 System.out.println("Please enter a number between 1 and 4.");
@@ -106,8 +111,8 @@ public class WordLadderClient {
     }
 
 
-    public static String mainSetStartWord(WordLinker wordLinker, Scanner userInput) {
-        //Scanner userInput = new Scanner(System.in);
+    public static String mainSetStartWord(WordLinker wordLinker) {
+        Scanner userInput = new Scanner(System.in);
         String inputWord = "";
         while (true) {
             int numWords = wordLinker.getNumWords();
@@ -119,14 +124,23 @@ public class WordLadderClient {
                 wordLinker.setStartWord(inputWord);
                 return inputWord;
             } else {
-                System.out.println("The word is not in the word list. Try again.");
+                System.out.println("The word is either not a word or not in the word list. Try again.");
             }
         }
     }
 
     public static void showNeighbors(WordLinker wordLinker, String userStartWord) {
         List<String> neighbors = wordLinker.getNeighbors(userStartWord);
-        System.out.printf("There are %d neighbors of '%s': %s\n", neighbors.size(), userStartWord, neighbors);
+
+        if (neighbors == null || neighbors.isEmpty()) {
+            System.out.printf("No neighbors found for '%s'.\n", userStartWord);
+            return;
+        } else {
+            System.out.printf("There are %d neighbors of '%s': ", neighbors.size(), userStartWord);
+        }
     }
+
+
+
 
 }
