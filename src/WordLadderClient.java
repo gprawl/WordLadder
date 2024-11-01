@@ -70,6 +70,40 @@ public class WordLadderClient {
             }
         }
     }
+    public static ArrayList<String> randomPath(String startWord, int pathLength, ArrayList<String> wordList, WordLinker w1){
+        Random rand = new Random();
+        HashSet<String> wrdsAlreadySeen = new HashSet<>();
+        wrdsAlreadySeen.add(startWord);
+        ArrayList<String> path = new ArrayList<>();
+        path.add(startWord);
+
+        return randomPath(startWord, pathLength, wordList, w1);
+    }
+
+    public static ArrayList<String> buildPath(String currentWord, int remainingLength, ArrayList<String> wordList, WordLinker w1, HashSet<String> alreadySeen, ArrayList<String> path, Random rand){
+        if(remainingLength == 0 || currentWord == null){
+            return path;
+        }
+
+        List<String> neighbors = w1.getNeighbors(currentWord);
+        ArrayList<String> validNeighbors = new ArrayList<>();
+
+        for(String neighbor : neighbors){
+            if(!alreadySeen.contains(neighbor)){
+                validNeighbors.add(neighbor);
+            }
+        }
+
+        if(validNeighbors.isEmpty()){
+            return path;
+        }
+        int randomIndex = rand.nextInt(validNeighbors.size());
+        String nextWord = validNeighbors.get(randomIndex);
+        alreadySeen.add(nextWord);
+        path.add(nextWord);
+
+        return buildPath(currentWord, remainingLength, wordList, w1, alreadySeen, path, rand);
+    }
 
 
     public static String mainSetStartWord(WordLinker wordLinker, Scanner userInput) {
