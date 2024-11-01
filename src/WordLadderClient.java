@@ -12,10 +12,10 @@ public class WordLadderClient {
 
         ArrayList<String> wordList = new ArrayList<>();
         WordLinker w1 = new WordLinker();
-        String startWord = "start";
+//        String startWord = "start";
         int pathLength = 5;
 
-        List<String> randomPath = WordLadderClient.randomPath(startWord, pathLength, wordList, w1);
+//        List<String> randomPath = WordLadderClient.randomPath(startWord, pathLength, wordList, w1);
 
 
         while (userSelection != 4) { //work on all errors from wrong input
@@ -36,18 +36,33 @@ public class WordLadderClient {
                         showNeighbors(wordLinker, userStartWord);
                         break;
 
-               //You give a target length for a path positive integer you may not reach the target
-               //length is the words don't have enough neighbors then input a start words that must
-              // be from the collection the output would be a random walk, but not the shortest
-                    //make sure to handle target length exceptions
+               //You give a target length for a path it must be a positive integer, although you may not reach the target
+               //length. if the words don't have enough neighbors then input a start word that must
+              // be from the collection, the output would be a random walk make sure to handle target length exceptions
                     case 2:
-                        //randompath(wordLinker, userStartWord);
+                        System.out.print("Enter the target length for the random path (positive integer): ");
+                        pathLength = userInput.nextInt();
+                        userInput.nextLine();
+
+                        if (pathLength <= 0) {
+                            System.out.println("Path length must be a positive integer. Exiting the program.");
+                            return;
+                        }
+
+                        List<String> randomPath = randomPath(userStartWord, pathLength, wordLinker);
+
+                        if (randomPath.size() > 1) {
+                            System.out.println("Random Path: " + String.join(" -> ", randomPath));
+                        } else {
+                            System.out.println("Could not build a path with that length.");
+                        }
+
                         break;
 
                 //BFS both words have to be outputs of the collection and the output is the word ladder between those two words.
                 // if you use bfs it will be the shortest path. the top level control should be clear and user-friendly,
                     case 3:
-                        //BFS(wordLinker, userStartWord);
+
                         break;
 
                     default:
@@ -82,23 +97,23 @@ public class WordLadderClient {
             }
         }
     }
-    public static ArrayList<String> randomPath(String startWord, int pathLength, ArrayList<String> wordList, WordLinker w1){
+    public static List<String> randomPath(String startWord, int pathLength, WordLinker w1){
         Random rand = new Random();
         HashSet<String> wrdsAlreadySeen = new HashSet<>();
         wrdsAlreadySeen.add(startWord);
-        ArrayList<String> path = new ArrayList<>();
+        List<String> path = new ArrayList<>();
         path.add(startWord);
 
-        return randomPath(startWord, pathLength, wordList, w1);
+        return buildPath(startWord, pathLength - 1, path, w1, wrdsAlreadySeen, rand);
     }
 
-    public static ArrayList<String> buildPath(String currentWord, int remainingLength, ArrayList<String> wordList, WordLinker w1, HashSet<String> alreadySeen, ArrayList<String> path, Random rand){
+    public static List<String> buildPath(String currentWord, int remainingLength, List<String> path, WordLinker w1, HashSet<String> alreadySeen, Random rand){
         if(remainingLength == 0 || currentWord == null){
             return path;
         }
 
         List<String> neighbors = w1.getNeighbors(currentWord);
-        ArrayList<String> validNeighbors = new ArrayList<>();
+        List<String> validNeighbors = new ArrayList<>();
 
         for(String neighbor : neighbors){
             if(!alreadySeen.contains(neighbor)){
@@ -114,7 +129,7 @@ public class WordLadderClient {
         alreadySeen.add(nextWord);
         path.add(nextWord);
 
-        return buildPath(currentWord, remainingLength, wordList, w1, alreadySeen, path, rand);
+        return buildPath(currentWord, remainingLength - 1 , path , w1, alreadySeen, rand);
     }
 
 
@@ -146,8 +161,5 @@ public class WordLadderClient {
             System.out.printf("There are %d neighbors of '%s': ", neighbors.size(), userStartWord);
         }
     }
-
-
-
 
 }
