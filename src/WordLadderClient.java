@@ -10,6 +10,13 @@ public class WordLadderClient {
         String userStartWord = mainSetStartWord(wordLinker);
         int userSelection = 0; //basic parameter of the while loop - for now
 
+        ArrayList<String> wordList = new ArrayList<>();
+        WordLinker w1 = new WordLinker();
+        String startWord = "start";
+        int pathLength = 5;
+
+        List<String> randomPath = WordLadderClient.randomPath(startWord, pathLength, wordList, w1);
+
 
         while (userSelection != 4) { //work on all errors from wrong input
 
