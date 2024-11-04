@@ -16,12 +16,6 @@ public class WordLadderClient {
         String startWord = "start";
         int pathLength = 5;
 
-        Set<String> emptyList = new HashSet<>();
-
-        Set<String> randomPath = WordLadderClient.randomPath(userStartWord, pathLength, wordList, w1, emptyList);
-        System.out.println(randomPath);
-
-
         while (userSelection != 4) { //work on all errors from wrong input
 
             userSelection = getUserSelection(userInput);
@@ -47,7 +41,8 @@ public class WordLadderClient {
                     case 2:
                         System.out.println("How long do you want the tab: ");
                         int length = userInput.nextInt();
-                        Set<String> random_walk = WordLadderClient.randomPath(userStartWord, length, wordList, w1, emptyList);
+                        Set<String> path = new HashSet<>();
+                        Set<String> random_walk = WordLadderClient.randomPath(userStartWord, length, wordList, w1, path);
                         System.out.println(random_walk);
                         break;
 
@@ -137,40 +132,24 @@ public class WordLadderClient {
         Random rand = new Random();
         HashSet<String> wrdsAlreadySeen = new HashSet<>();
         wrdsAlreadySeen.add(startWord);
-        //ArrayList<String> path = new ArrayList<>();
         list.add(startWord);
 
-        //return buildPath(startWord, pathLength - 1, wordList,w1, wrdsAlreadySeen, path, rand);
         if(pathLength == 0 || startWord == null){
             return list;
         }
 
         List<String> neighbors = w1.getNeighbors(startWord);
-        if(neighbors.size()<= 0){
+        if(neighbors.size() <= 0){
             return list;
         }
-        //ArrayList<String> validNeighbors = new ArrayList<>();
+
         int randomIndex = rand.nextInt(neighbors.size());
         startWord = neighbors.get(randomIndex);
 
-
-        //for(String neighbor : neighbors){
             if(!wrdsAlreadySeen.contains(startWord)){
-                //validNeighbors.add(startWord);
                 wrdsAlreadySeen.add(startWord);
                 list.add(startWord);
             }
-
-        //}
-
-//        if(validNeighbors.isEmpty()){
-//            return path;
-//        }
-
-//        int randomIndex = rand.nextInt(validNeighbors.size());
-//        String nextWord = validNeighbors.get(randomIndex);
-//        alreadySeen.add(nextWord);
-//        path.add(nextWord);
 
         return randomPath(startWord, pathLength-1, wordList, w1, list);
     }
