@@ -38,7 +38,7 @@ public class WordLadderClient {
               // be from the collection the output would be a random walk, but not the shortest
                     //make sure to handle target length exceptions
                     case 2:
-                        System.out.println("How many neighbors do you want: ");
+                        System.out.print("How many neighbors do you want: ");
                         int length = userInput.nextInt();
                         Set<String> path = new HashSet<>();
                         Set<String> random_walk = WordLadderClient.randomPath(userStartWord, length, wordList, w1, path);
