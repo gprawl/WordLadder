@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class WordLadderClient {
@@ -15,7 +16,10 @@ public class WordLadderClient {
         String startWord = "start";
         int pathLength = 5;
 
-        List<String> randomPath = WordLadderClient.randomPath(startWord, pathLength, wordList, w1);
+        Set<String> emptyList = new HashSet<>();
+
+        Set<String> randomPath = WordLadderClient.randomPath(userStartWord, pathLength, wordList, w1, emptyList);
+        System.out.println(randomPath);
 
 
         while (userSelection != 4) { //work on all errors from wrong input
@@ -33,7 +37,7 @@ public class WordLadderClient {
               // 1st see the neighbors of a word. If you input any word that is a word in wordlist
               // it will output a word that is only different by one letter
                     case 1:
-                        showNeighbors(wordLinker, userStartWord);
+                       showNeighbors(wordLinker, userStartWord);
                         break;
 
                //You give a target length for a path positive integer you may not reach the target
@@ -41,13 +45,29 @@ public class WordLadderClient {
               // be from the collection the output would be a random walk, but not the shortest
                     //make sure to handle target length exceptions
                     case 2:
-                        //randompath(wordLinker, userStartWord);
+                        System.out.println("How long do you want the tab: ");
+                        int length = userInput.nextInt();
+                        Set<String> random_walk = WordLadderClient.randomPath(userStartWord, length, wordList, w1, emptyList);
+                        System.out.println(random_walk);
                         break;
 
                 //BFS both words have to be outputs of the collection and the output is the word ladder between those two words.
                 // if you use bfs it will be the shortest path. the top level control should be clear and user-friendly,
                     case 3:
-                        //BFS(wordLinker, userStartWord);
+                        System.out.println("Enter the target word: ");
+                        String userTargetWord = userInput.nextLine();
+
+                        if(!wordLinker.isWord(userTargetWord)){
+                            System.out.println("The target word is not found.");
+                        } else {
+                            //List<String> ladder = BFS(wordLinker, startWord, userTargetWord);
+//                            if(ladder.isEmpty()){
+//                                System.out.println("No word ladder found.");
+//                            } else {
+//                                System.out.println("Word Ladder: ");
+//                            }
+                        }
+
                         break;
 
                     default:
@@ -82,14 +102,77 @@ public class WordLadderClient {
             }
         }
     }
-    public static ArrayList<String> randomPath(String startWord, int pathLength, ArrayList<String> wordList, WordLinker w1){
+//    public static List<String> BFS(WordLinker wl, String userStartWord, String userTargetWord) {
+//        Queue<List<String>> queue = new LinkedList<>();
+//
+//        List<String> initialPath = new ArrayList<>();
+//        initialPath.add(userStartWord);
+//        queue.add(initialPath);
+//
+//        Set<String> visited = new HashSet<>();
+//        visited.add(userStartWord);
+//
+//        while(!queue.isEmpty()){
+//            List<String> path = queue.poll();
+//            String currentWord = path.get(path.size() - 1);
+//
+//            if(currentWord.equals(userTargetWord)){
+//                return path;
+//            }
+//            for(String neighbor : wl.getNeighbors(currentWord)){
+//                if(!visited.contains(neighbor)){
+//                    visited.add(neighbor);
+//
+//                    List<String> newPath = new ArrayList<>(path);
+//                    newPath.add(neighbor);
+//                    queue.add(newPath);
+//                }
+//            }
+//
+//        }
+//
+//        return Collections.emptyList();
+//    }
+    public static Set<String> randomPath(String startWord, int pathLength, ArrayList<String> wordList, WordLinker w1, Set<String> list){
         Random rand = new Random();
         HashSet<String> wrdsAlreadySeen = new HashSet<>();
         wrdsAlreadySeen.add(startWord);
-        ArrayList<String> path = new ArrayList<>();
-        path.add(startWord);
+        //ArrayList<String> path = new ArrayList<>();
+        list.add(startWord);
 
-        return randomPath(startWord, pathLength, wordList, w1);
+        //return buildPath(startWord, pathLength - 1, wordList,w1, wrdsAlreadySeen, path, rand);
+        if(pathLength == 0 || startWord == null){
+            return list;
+        }
+
+        List<String> neighbors = w1.getNeighbors(startWord);
+        if(neighbors.size()<= 0){
+            return list;
+        }
+        //ArrayList<String> validNeighbors = new ArrayList<>();
+        int randomIndex = rand.nextInt(neighbors.size());
+        startWord = neighbors.get(randomIndex);
+
+
+        //for(String neighbor : neighbors){
+            if(!wrdsAlreadySeen.contains(startWord)){
+                //validNeighbors.add(startWord);
+                wrdsAlreadySeen.add(startWord);
+                list.add(startWord);
+            }
+
+        //}
+
+//        if(validNeighbors.isEmpty()){
+//            return path;
+//        }
+
+//        int randomIndex = rand.nextInt(validNeighbors.size());
+//        String nextWord = validNeighbors.get(randomIndex);
+//        alreadySeen.add(nextWord);
+//        path.add(nextWord);
+
+        return randomPath(startWord, pathLength-1, wordList, w1, list);
     }
 
     public static ArrayList<String> buildPath(String currentWord, int remainingLength, ArrayList<String> wordList, WordLinker w1, HashSet<String> alreadySeen, ArrayList<String> path, Random rand){
@@ -143,7 +226,8 @@ public class WordLadderClient {
             System.out.printf("No neighbors found for '%s'.\n", userStartWord);
             return;
         } else {
-            System.out.printf("There are %d neighbors of '%s': ", neighbors.size(), userStartWord);
+            System.out.printf("There are %d neighbors of '%s'\n: ", neighbors.size(), userStartWord);
+            System.out.println(neighbors);
         }
     }
 
