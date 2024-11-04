@@ -20,7 +20,6 @@ public class WordLadderClient {
 
             userSelection = getUserSelection(userInput);
 
-//            String userStartWord = "";
             if (userSelection == 4) {
                 System.out.println("The Word Ladder program has ended.");
                 break;
@@ -97,6 +96,7 @@ public class WordLadderClient {
             }
         }
     }
+
     public static List<String> formWordLadder(WordLinker wl, String userStartWord, String userTargetWord) {
         Queue<List<String>> queue = new LinkedList<>();
         List<String> initialPath = new LinkedList<>();
@@ -183,7 +183,6 @@ public class WordLadderClient {
         return buildPath(currentWord, remainingLength, wordList, w1, alreadySeen, path, rand);
     }
 
-
     public static String mainSetStartWord(WordLinker wordLinker) {
         Scanner userInput = new Scanner(System.in);
         String inputWord = "";
@@ -213,8 +212,4 @@ public class WordLadderClient {
             System.out.println(neighbors);
         }
     }
-
-
-
-
 }
