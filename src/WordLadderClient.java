@@ -38,11 +38,12 @@ public class WordLadderClient {
               // be from the collection the output would be a random walk, but not the shortest
                     //make sure to handle target length exceptions
                     case 2:
-                        System.out.print("How many neighbors do you want: ");
+                        System.out.print("Enter the target length for the random path: ");
                         int length = userInput.nextInt();
                         Set<String> path = new HashSet<>();
-                        Set<String> random_walk = WordLadderClient.randomPath(userStartWord, length, wordList, w1, path);
-                        System.out.println(random_walk);
+                        Set<String> random_path = WordLadderClient.randomPath(userStartWord, length, wordList, w1, path);
+                        //System.out.println("Random Path: " + String.join(" -> ", random_path));
+                        System.out.println(random_path);
                         break;
 
                 //BFS both words have to be outputs of the collection and the output is the word ladder between those two words.
@@ -191,7 +192,7 @@ public class WordLadderClient {
             System.out.printf("Please input a start word (Total words: %d): ", numWords);
             inputWord = userInput.nextLine();
 
-            // doubele check for the loop
+            // double check for the loop
             if (wordLinker.isWord(inputWord)) {
                 wordLinker.setStartWord(inputWord);
                 return inputWord;
@@ -208,8 +209,8 @@ public class WordLadderClient {
             System.out.printf("No neighbors found for '%s'.\n", userStartWord);
             return;
         } else {
-            System.out.printf("There are %d neighbors of '%s'\n: ", neighbors.size(), userStartWord);
-            System.out.println(neighbors);
+            // System.out.printf("There are %d neighbors of '%s'\n: ", neighbors.size(), userStartWord);
+            System.out.println("Neighbors: " + neighbors);
         }
     }
 }
