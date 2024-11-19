@@ -40,8 +40,8 @@ public class WordLadderClient {
                     case 2:
                         System.out.print("Enter the target length for the random path: ");
                         int length = userInput.nextInt();
-                        Set<String> path = new HashSet<>();
-                        Set<String> random_path = WordLadderClient.randomPath(userStartWord, length, wordList, w1, path);
+                        ArrayList<String> path = new ArrayList<>();
+                        ArrayList<String> random_path = WordLadderClient.randomPath(userStartWord, length, wordList, w1, path);
                         //System.out.println("Random Path: " + String.join(" -> ", random_path));
                         System.out.println(random_path);
                         break;
@@ -133,17 +133,23 @@ public class WordLadderClient {
         return null;
     }
 
-    public static Set<String> randomPath(String startWord, int pathLength, ArrayList<String> wordList, WordLinker w1, Set<String> list){
+    public static ArrayList<String> randomPath(String startWord, int pathLength, ArrayList<String> wordList, WordLinker w1, ArrayList<String> list){
         Random rand = new Random();
-        HashSet<String> wrdsAlreadySeen = new HashSet<>();
+        Set<String> wrdsAlreadySeen = new HashSet<>(); // change from a set because a set doesn't have an order
         wrdsAlreadySeen.add(startWord);
-        list.add(startWord);
+        if(!list.contains(startWord)){
+            list.add(startWord);
+        }
 
         if(pathLength == 0 || startWord == null){
             return list;
         }
 
         List<String> neighbors = w1.getNeighbors(startWord);
+        neighbors.removeAll(wrdsAlreadySeen);
+        //System.out.printf("path %d %s %s \n", pathLength - 1, neighbors, startWord);
+        //System.out.println(list);
+//        System.out.println("path " + pathLength - 1 + " " + neighbors);
         if(neighbors.size() <= 0){
             return list;
         }
@@ -151,10 +157,13 @@ public class WordLadderClient {
         int randomIndex = rand.nextInt(neighbors.size());
         startWord = neighbors.get(randomIndex);
 
-            if(!wrdsAlreadySeen.contains(startWord)){
-                wrdsAlreadySeen.add(startWord);
-                list.add(startWord);
-            }
+        if(!wrdsAlreadySeen.contains(startWord)){
+            wrdsAlreadySeen.add(startWord);
+//            list.add(startWord);
+        }
+
+
+
 
         return randomPath(startWord, pathLength-1, wordList, w1, list);
     }
